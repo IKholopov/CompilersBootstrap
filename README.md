@@ -32,8 +32,17 @@ docker-compose up -d
 4. Настройте CLion в точности, как описано [здесь](https://github.com/shuhaoliu/docker-clion-dev)
 
 ## Я очень хочу, чтобы всё собиралось на OS X
+1. Поставить рабочий компилятор (например, GCC или CLang из Homebrew), т.к. нативный компилятор плохо работает с общими C++-проектами и зточен под нативные приложения.
+2. Настроить переменные окружения
+```bash
+export CC=<path to compiler, for ex. '/usr/local/opt/gcc/bin/gcc-9'>
+export CXX=<path to compiler, for ex. '/usr/local/opt/gcc/bin/g++-9'>
+```
+Можно записать в ~/.bash_profile, чтобы экспортировать всегда.
+3. Библиотеки, которые понадобятся в дальнейшем
 ```bash
 brew install flex bison
-brew link --force flex    # т.к. OS X - unix-подобный, он идёт с системным и допотопным flex & bison. Можно переписать версии на brew по-умолчанию таким образом или обновить пути в соответствии с файлом osx.env из этой репы
-brew link --force bison
+ # т.к. OS X - unix-подобный, он идёт с системным и допотопным flex & bison. Можно переписать версии на brew по-умолчанию таким образом или обновить пути в соответствии с файлом osx.env из этой репы
+export PATH="/usr/local/opt/flex/bin:$PATH"
+export PATH="/usr/local/opt/bison/bin:$PATH"
 ```
