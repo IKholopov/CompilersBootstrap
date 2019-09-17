@@ -23,4 +23,9 @@ RUN echo 'debugger:pwd' | chpasswd
 USER root
 WORKDIR /root
 
+###### Define your ubuntu package requirements ######
+# For ex.
+# RUN apt-get install -y libgtest-dev
+#####################################################
+
 CMD ["/usr/sbin/sshd", "-D"]
