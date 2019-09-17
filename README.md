@@ -38,7 +38,7 @@ docker-compose up -d
 export CC=<path to compiler, for ex. '/usr/local/opt/gcc/bin/gcc-9'>
 export CXX=<path to compiler, for ex. '/usr/local/opt/gcc/bin/g++-9'>
 ```
-Можно записать в ~/.bash_profile, чтобы экспортировать всегда.
+Можно записать в ~/.bash_profile, чтобы экспортировать всегда.  
 3. Библиотеки, которые понадобятся в дальнейшем
 ```bash
 brew install flex bison
