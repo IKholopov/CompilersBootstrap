@@ -1,0 +1,5 @@
+def main int:
+    read.fact.print
+
+def fact(n int) int:
+    1 if n <= 1 else n * (n-1).fact

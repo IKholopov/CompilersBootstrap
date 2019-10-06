@@ -1,0 +1,20 @@
+def main:
+    read.make_matrix(read).print_list.prt
+
+def make_matrix(x int) (y int) list:
+    x.make_column(y, 0)
+
+def make_column(x int) (y int, col int) list:
+    [x.make_row( col, 0)] + x.make_column(y, col + 1) if col < y else []
+
+def make_row(x int) (col int, row int) list:
+    [col + row] + x.make_row(col, row + 1) if row < x else []
+
+def prt(mx list):
+    mx.prt_idx([read, read, read, read])
+
+def prt_idx(mx list) (idx list):
+    [mx[idx[0]][idx[1]], mx[idx[2]][idx[3]]].print_list.prt_idx_sum
+
+def prt_idx_sum(pair list):
+    (pair[0] + pair[1]).print

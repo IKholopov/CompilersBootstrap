@@ -1,0 +1,11 @@
+def main int:
+    [user_list][0].first_two.len.print
+
+def arange(n int) list:
+    [0] if n = 1 else (n - 1).arange + [n - 1]
+
+def user_list list:
+    read.arange
+
+def first_two(l list) list:
+    [l[0], l[1] + l[0]]

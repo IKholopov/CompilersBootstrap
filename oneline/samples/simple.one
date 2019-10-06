@@ -1,0 +1,5 @@
+def main:
+    read.f(read, read).print
+
+def f(x int) (y int, z int) int:
+    -x * x + y * y - (z - 1) * z * (z + 1)
