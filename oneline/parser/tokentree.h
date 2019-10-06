@@ -31,11 +31,11 @@ public:
     explicit SeqNode(std::initializer_list<TreeNodePtr> list) : seq_(list) {}
 
     std::ostream& Print(std::ostream& stream) const override {
-        stream << "[ ";
-        for (const auto val : seq_) {
+        stream << "{ ";
+        for (const auto& val : seq_) {
             val->Print(stream) << " ";
         }
-        stream << "]";
+        stream << "}";
         return stream;
     }
 
