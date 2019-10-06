@@ -15,7 +15,9 @@ CHAR    [A-Za-z_]
 DIGITP  [1-9]
 ZERO    0
 DIGIT   {ZERO}|{DIGITP}
-BIN_OP    <=|>=|[<=>*/+\-]
+BIN_OP_MULT   [*/]
+BIN_OP_ADD    [+\-]
+BIN_OP_CMP  <=|>=|[<=>]
 
 ID      {CHAR}({CHAR}|{DIGIT})*
 INT_VAL ({DIGITP}({DIGIT})*|{ZERO})
@@ -36,7 +38,9 @@ INT_VAL ({DIGITP}({DIGIT})*|{ZERO})
 "]"         { return Process(Token::R_SQ_BRACE); }
 ":"         { return Process(Token::COLON); }
 ","         { return Process(Token::COMMA); }
-{BIN_OP}    { return Process(Token::BIN_OP); }
+{BIN_OP_MULT}    { return Process(Token::BIN_OP_MULT); }
+{BIN_OP_ADD}    { return Process(Token::BIN_OP_ADD); }
+{BIN_OP_CMP}    { return Process(Token::BIN_OP_CMP); }
 "if"        { return Process(Token::IF); }
 "else"      { return Process(Token::ELSE); }
 {ID}        { return Process(Token::NAME); }

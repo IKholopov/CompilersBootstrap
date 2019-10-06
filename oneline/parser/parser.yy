@@ -41,7 +41,9 @@ Position toPos(const yy::location& from, const yy::location& to) {
 %token R_SQ_BRACE
 %token COLON
 %token COMMA
-%token <std::string> BIN_OP
+%token <std::string> BIN_OP_MULT
+%token <std::string> BIN_OP_ADD
+%token <std::string> BIN_OP_CMP
 %token IF
 %token ELSE
 %token <std::string> NAME
@@ -63,7 +65,11 @@ Position toPos(const yy::location& from, const yy::location& to) {
 %left NL
 %left IF
 %left ELSE
-%left BIN_OP
+%left BIN_OP_CMP
+%left BIN_OP_ADD
+%left BIN_OP_MULT
+%left DOT
+%left L_SQ_BRACE
 
 %%
 
@@ -102,7 +108,9 @@ exp
     | L_SQ_BRACE exp R_SQ_BRACE             { $$ = MakeSeq({ MakeValue("["), $2, MakeValue("]") }); }
     | L_SQ_BRACE R_SQ_BRACE                 { $$ = MakeSeq({ MakeValue("["), MakeValue("]") }); }
     | exp IF exp ELSE exp                   { $$ = MakeSeq({ $1, MakeValue("if"), $3, MakeValue("else"), $5 });  }
-    | exp BIN_OP exp                        { $$ = MakeSeq({ $1, MakeValue($2), $3 }); }
+    | exp BIN_OP_MULT exp                   { $$ = MakeSeq({ $1, MakeValue($2), $3 }); }
+    | exp BIN_OP_ADD exp                    { $$ = MakeSeq({ $1, MakeValue($2), $3 }); }
+    | exp BIN_OP_CMP exp                    { $$ = MakeSeq({ $1, MakeValue($2), $3 }); }
     | exp DOT id L_BRACE exp_list R_BRACE   { $$ = MakeSeq({ $1, MakeValue("."), MakeValue($3), MakeValue("("), $5, MakeValue(")") }); }
     | exp DOT id                            { $$ = MakeSeq({ $1, MakeValue("."), MakeValue($3)}); }
     | exp DOT id L_BRACE exp R_BRACE        { $$ = MakeSeq({ $1, MakeValue("."), MakeValue($3), MakeValue("("), $5, MakeValue(")") }); }

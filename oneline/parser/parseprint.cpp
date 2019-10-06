@@ -14,7 +14,7 @@ int main() {
             return 1;
         }
         assert(result != nullptr);
-        // result->Print(std::cout);
+        result->Print(std::cout);
     } catch (std::exception& e) {
         std::cerr << "\x1B[31m" << e.what() << "\x1B[0m" << std::endl;
     }

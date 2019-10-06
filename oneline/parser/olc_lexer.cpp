@@ -16,7 +16,9 @@ static const std::unordered_map<Token, const char*> TokenNames = {
     {Token::R_SQ_BRACE, "R_SQ_BRACE"},
     {Token::COLON, "COLON"},
     {Token::COMMA, "COMMA"},
-    {Token::BIN_OP, "BIN_OP"},
+    {Token::BIN_OP_MULT, "BIN_OP_MULT"},
+    {Token::BIN_OP_ADD, "BIN_OP_ADD"},
+    {Token::BIN_OP_CMP, "BIN_OP_CMP"},
     {Token::IF, "IF"},
     {Token::ELSE, "ELSE"},
     {Token::NAME, "NAME"},
@@ -43,7 +45,9 @@ int OlcLexer::Process(Token token)
             Build(value);
         }
         break;
-    case Token::BIN_OP: {
+    case Token::BIN_OP_MULT:
+    case Token::BIN_OP_ADD:
+    case Token::BIN_OP_CMP:{
             std::string operation = YYText();
             DebugPrint(token, operation);
             Build(operation);
