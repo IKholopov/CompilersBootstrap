@@ -34,7 +34,7 @@ INT_VAL ({DIGITP}({DIGIT})*|{ZERO})
 ")"         { return Process(Token::R_BRACE); }
 "["         { return Process(Token::L_SQ_BRACE); }
 "]"         { return Process(Token::R_SQ_BRACE); }
-":"         { return Process(Token::SEMI); }
+":"         { return Process(Token::COLON); }
 ","         { return Process(Token::COMMA); }
 {BIN_OP}    { return Process(Token::BIN_OP); }
 "if"        { return Process(Token::IF); }

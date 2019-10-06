@@ -14,7 +14,7 @@ static const std::unordered_map<Token, const char*> TokenNames = {
     {Token::R_BRACE, "R_BRACE"},
     {Token::L_SQ_BRACE, "L_SQ_BRACE"},
     {Token::R_SQ_BRACE, "R_SQ_BRACE"},
-    {Token::SEMI, "SEMI"},
+    {Token::COLON, "COLON"},
     {Token::COMMA, "COMMA"},
     {Token::BIN_OP, "BIN_OP"},
     {Token::IF, "IF"},

@@ -6,12 +6,15 @@
 %locations
 
 %code requires{
+    #include <tokentree.h>
+
     namespace OlcLex {
         class OlcLexer;
     }
 }
 
 %parse-param { OlcLex::OlcLexer& scanner }
+%parse-param { TreeNodePtr& result }
 
 %code {
     #include "olc_lexer.h"
@@ -36,7 +39,7 @@ Position toPos(const yy::location& from, const yy::location& to) {
 %token R_BRACE
 %token L_SQ_BRACE
 %token R_SQ_BRACE
-%token SEMI
+%token COLON
 %token COMMA
 %token <std::string> BIN_OP
 %token IF
@@ -50,12 +53,12 @@ Position toPos(const yy::location& from, const yy::location& to) {
 %type <std::string> id
 %type arg
 %type type_decl
-%type method_signature
-%type method
-%type method_list
+%type <TreeNodePtr> method_signature
+%type <TreeNodePtr> method
+%type <TreeNodePtr> method_list
 %type program
-%type exp
-%type exp_list
+%type <TreeNodePtr> exp
+%type <TreeNodePtr> exp_list
 
 %left NL
 %left IF
@@ -65,8 +68,8 @@ Position toPos(const yy::location& from, const yy::location& to) {
 %%
 
 program
-    : method_list END       {  }
-    | method_list NL END    {  }
+    : method_list END       { result = $1; }
+    | method_list NL END    { result = $1; }
 
 arg
     : id type_decl    {  }
@@ -76,38 +79,38 @@ type_decl
     | LIST      { }
 
 method_signature
-    : DEF id                                 {  }
-    | DEF id L_BRACE arg R_BRACE             {  }
+    : DEF id                                 { $$ = MakeSeq({ MakeValue("def"), MakeValue($2) }); }
+    | DEF id L_BRACE arg R_BRACE             { $$ = MakeSeq({ MakeValue("def"), MakeValue($2) }); }
 
 method
-    : method_signature SEMI NL exp           {  }
-    | method_signature type_decl SEMI NL exp {  }
+    : method_signature COLON NL exp           { $$ = MakeSeq({ $1, MakeValue(":"), $4 }); }
+    | method_signature type_decl COLON NL exp { $$ = MakeSeq({ $1, MakeValue(":"), $5 }); }
 
 method_list
-    : method                    {  }
-    | method_list method        {  }
+    : method                    { $$ = $1; }
+    | method_list method        { $$ = MakeSeq({ $1, $2 }); }
 
 id
     : NAME   { $$ = $1; }
 
 exp_list
-    : exp COMMA exp         { }
-    | exp_list COMMA exp    { }
+    : exp COMMA exp         { $$ = MakeSeq({ $1, MakeValue(","), $3 }); }
+    | exp_list COMMA exp    { $$ = MakeSeq({ $1, MakeValue(","), $3 });}
 
 exp
-    : L_SQ_BRACE exp_list R_SQ_BRACE        { }
-    | L_SQ_BRACE exp R_SQ_BRACE             { }
-    | L_SQ_BRACE R_SQ_BRACE                 { }
-    | exp IF exp ELSE exp                   { std::cerr << "if else" << std::endl;  }
-    | exp BIN_OP exp                        { std::cerr << $2 << std::endl; }
-    | exp DOT id L_BRACE exp_list R_BRACE   { }
-    | exp DOT id                            { std::cerr << "call " << $3 << "()" << std::endl; }
-    | exp DOT id L_BRACE exp R_BRACE        { }
-    | id                                    { }
-    | INT_CONST                             { }
-    | exp L_SQ_BRACE exp R_SQ_BRACE         { }
-    | exp L_SQ_BRACE exp SEMI R_SQ_BRACE    { }
-    | L_BRACE exp R_BRACE                   { }
+    : L_SQ_BRACE exp_list R_SQ_BRACE        { $$ = MakeSeq({ MakeValue("["), $2, MakeValue("]") }); }
+    | L_SQ_BRACE exp R_SQ_BRACE             { $$ = MakeSeq({ MakeValue("["), $2, MakeValue("]") }); }
+    | L_SQ_BRACE R_SQ_BRACE                 { $$ = MakeSeq({ MakeValue("["), MakeValue("]") }); }
+    | exp IF exp ELSE exp                   { $$ = MakeSeq({ $1, MakeValue("if"), $3, MakeValue("else"), $5 });  }
+    | exp BIN_OP exp                        { $$ = MakeSeq({ $1, MakeValue($2), $3 }); }
+    | exp DOT id L_BRACE exp_list R_BRACE   { $$ = MakeSeq({ $1, MakeValue("."), MakeValue($3), MakeValue("("), $5, MakeValue(")") }); }
+    | exp DOT id                            { $$ = MakeSeq({ $1, MakeValue("."), MakeValue($3)}); }
+    | exp DOT id L_BRACE exp R_BRACE        { $$ = MakeSeq({ $1, MakeValue("."), MakeValue($3), MakeValue("("), $5, MakeValue(")") }); }
+    | id                                    { $$ = MakeValue($1); }
+    | INT_CONST                             { $$ = MakeValue(std::to_string($1)); }
+    | exp L_SQ_BRACE exp R_SQ_BRACE         { $$ = MakeSeq({ $1, MakeValue("["), $3, MakeValue("]") }); }
+    | exp L_SQ_BRACE exp COLON R_SQ_BRACE   { $$ = MakeSeq({ $1, MakeValue("["), $3, MakeValue(":"), MakeValue("]") }); }
+    | L_BRACE exp R_BRACE                   { $$ = MakeSeq({ MakeValue("("), $2, MakeValue(")") }); }
 %%
 
 void yy::parser::error (const location_type& l, const std::string& m) {
