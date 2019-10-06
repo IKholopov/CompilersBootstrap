@@ -2,8 +2,9 @@
 
 #include "olc_lexer.h"
 
-int main() {
-    OlcLex::OlcLexer lexer{&std::cout};
+int main(int argc, const char* argv[]) {
+    bool usePos = argc <= 1 || argv[1] != std::string("--nopos");
+    OlcLex::OlcLexer lexer{&std::cout, usePos};
     try {
         while(lexer.yylex() != 0) {
         }

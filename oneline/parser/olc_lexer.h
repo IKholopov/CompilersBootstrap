@@ -23,7 +23,9 @@ namespace OlcLex {
 class OlcLexer : public yyFlexLexer {
 public:
     OlcLexer() = default;
-    explicit OlcLexer(std::ostream* debug_print) : debug(debug_print) {
+    explicit OlcLexer(std::ostream* debug_print, bool printPosition=true)
+        : debug(debug_print),
+          printPos(printPosition) {
     }
 
     int yylex(yy::parser::semantic_type* const value=nullptr, yy::parser::location_type* location=nullptr);
@@ -35,6 +37,7 @@ private:
     int lineNumber = 1;
     int colNumber = 1;
     std::ostream* debug = nullptr;
+    bool printPos = true;
 
     int Process(Token token);
     int EmptyLine();
@@ -43,10 +46,11 @@ private:
     void Error();
 
     void DebugPrint(Token token) const;
+    void DebugPrintNewLine() const;
     void DebugPrint(Token token, std::string attribute) const;
     void DebugPrint(Token token, int64_t attribute) const;
     void PrintToken(Token token) const;
-    void PrintLine() const;
+    void PrintSpace(Token token) const;
     std::string FormattedPosition() const;
 
     template<typename T>

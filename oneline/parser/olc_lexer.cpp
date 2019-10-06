@@ -16,9 +16,7 @@ static const std::unordered_map<Token, const char*> TokenNames = {
     {Token::R_SQ_BRACE, "R_SQ_BRACE"},
     {Token::SEMI, "SEMI"},
     {Token::COMMA, "COMMA"},
-    {Token::BIN_OP_0, "BIN_OP_0"},
-    {Token::BIN_OP_1, "BIN_OP_1"},
-    {Token::BIN_OP_2, "BIN_OP_2"},
+    {Token::BIN_OP, "BIN_OP"},
     {Token::IF, "IF"},
     {Token::ELSE, "ELSE"},
     {Token::NAME, "NAME"},
@@ -45,9 +43,7 @@ int OlcLexer::Process(Token token)
             Build(value);
         }
         break;
-    case Token::BIN_OP_0:
-    case Token::BIN_OP_1:
-    case Token::BIN_OP_2: {
+    case Token::BIN_OP: {
             std::string operation = YYText();
             DebugPrint(token, operation);
             Build(operation);
@@ -81,6 +77,7 @@ int OlcLexer::EmptyLine()
     int result = Process(Token::NL);
     lineNumber += YYLeng() - 1;
     colNumber = 1;
+    DebugPrintNewLine();
     return result;
 }
 
@@ -96,6 +93,9 @@ void OlcLexer::Error()
 
 std::string OlcLexer::FormattedPosition() const
 {
+    if (!printPos) {
+        return "";
+    }
     return "(" + std::to_string(lineNumber) + "," + std::to_string(colNumber) + ")";
 }
 
@@ -105,7 +105,15 @@ void OlcLexer::DebugPrint(Token token) const
         return;
     }
     PrintToken(token);
-    PrintLine();
+    PrintSpace(token);
+}
+
+void OlcLexer::DebugPrintNewLine() const
+{
+    if (debug == nullptr) {
+        return;
+    }
+    *debug << "\n" << std::endl;
 }
 
 void OlcLexer::DebugPrint(Token token, std::string attribute) const
@@ -115,7 +123,7 @@ void OlcLexer::DebugPrint(Token token, std::string attribute) const
     }
     PrintToken(token);
     *debug << "{" << attribute << "}";
-    PrintLine();
+    PrintSpace(token);
 }
 
 void OlcLexer::DebugPrint(Token token, int64_t attribute) const
@@ -125,7 +133,7 @@ void OlcLexer::DebugPrint(Token token, int64_t attribute) const
     }
     PrintToken(token);
     *debug << "{" << attribute << "}";
-    PrintLine();
+    PrintSpace(token);
 }
 
 void OlcLexer::PrintToken(Token token) const
@@ -133,9 +141,12 @@ void OlcLexer::PrintToken(Token token) const
     *debug << TokenToName(token);
 }
 
-void OlcLexer::PrintLine() const
+void OlcLexer::PrintSpace(Token token) const
 {
-    *debug << FormattedPosition() << std::endl;
+    *debug << FormattedPosition() << " ";
+    if (token == Token::NL) {
+        *debug << std::endl;
+    }
 }
 
 }
