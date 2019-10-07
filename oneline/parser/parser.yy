@@ -68,7 +68,9 @@ Position toPos(const yy::location& from, const yy::location& to) {
 %%
 
 program
-    : method_list END       { result = $1; }
+    : %empty
+    | END
+    | method_list END       { result = $1; }
     | method_list NL END    { result = $1; }
 
 arg
@@ -87,7 +89,8 @@ method
     | method_signature type_decl COLON NL exp { $$ = MakeSeq({ $1, MakeValue(":"), $5 }); }
 
 method_list
-    : method                    { $$ = $1; }
+    : %empty			{ $$ = MakeSeq({}); }
+    | method                    { $$ = $1; }
     | method_list method        { $$ = MakeSeq({ $1, $2 }); }
 
 id
