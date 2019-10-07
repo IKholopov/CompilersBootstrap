@@ -9,4 +9,4 @@ def arange(n int) list:
     [0] if n = 1 else (n - 1).arange + [n - 1]
 
 def sum(l list) int:
-    l[0] if l.len = 1 else l[0] + l[1:].sum
+    l[0] if l.len = 1 else l[0] + 2 * l[1:].sum
